@@ -1,0 +1,29 @@
+version: '3.8'
+
+services:
+  web:
+    build: ./
+    command: python manage.py runserver 0.0.0.0:8001
+    volumes:
+      - ./:/usr/src/generative-humans/
+    ports:
+      - 8001:8001
+    depends_on:
+      - db
+    environment:
+      - DJANGO_SETTINGS_MODULE=generative_humans.settings.development
+    env_file:
+      - development.env
+  db:
+    image: postgres:15
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+    ports:
+      - 5432:5432
+    environment:
+      - POSTGRES_USER=gh_dbu
+      - POSTGRES_PASSWORD=gt3M0o7!RdrmCehi6*skY
+      - POSTGRES_DB=gh_db
+
+volumes:
+  postgres_data:

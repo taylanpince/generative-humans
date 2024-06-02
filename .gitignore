@@ -35,7 +35,7 @@ terraform.rc
 
 .idea/
 .DS_Store
-.env
+*.env
 
 db.sqlite3
 
