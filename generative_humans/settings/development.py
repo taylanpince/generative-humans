@@ -9,7 +9,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'gh_db',
         'USER': 'gh_dbu',
-        'PASSWORD': 'gt3M0o7!RdrmCehi6*skY',
+        'PASSWORD': os.environ.get('DATABASE_PASSWORD', ''),
         'HOST': 'db',
         'PORT': '5432',
     }

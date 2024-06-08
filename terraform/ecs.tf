@@ -14,16 +14,20 @@ resource "aws_ecs_task_definition" "prod_backend_web" {
   container_definitions = templatefile(
     "templates/backend_container.json.tpl",
     {
-      region     = var.region
-      name       = "prod-backend-web"
-      image      = aws_ecr_repository.backend.repository_url
-      command    = ["gunicorn", "-w", "3", "-b", ":8001", "generative_humans.wsgi:application"]
-      log_group  = aws_cloudwatch_log_group.prod_backend.name
-      log_stream = aws_cloudwatch_log_stream.prod_backend_web.name
+      region       = var.region
+      name         = "prod-backend-web"
+      image        = aws_ecr_repository.backend.repository_url
+      command      = ["gunicorn", "-w", "3", "-b", ":8001", "generative_humans.wsgi:application"]
+      log_group    = aws_cloudwatch_log_group.prod_backend.name
+      log_stream   = aws_cloudwatch_log_stream.prod_backend_web.name
+      rds_db_name  = var.prod_rds_db_name
+      rds_username = var.prod_rds_username
+      rds_password = var.prod_rds_password
+      rds_hostname = aws_db_instance.prod.address
     },
   )
-  execution_role_arn = aws_iam_role.ecs_task_execution.arn
-  task_role_arn      = aws_iam_role.prod_backend_task.arn
+  execution_role_arn     = aws_iam_role.ecs_task_execution.arn
+  task_role_arn          = aws_iam_role.prod_backend_task.arn
 }
 
 resource "aws_ecs_service" "prod_backend_web" {
@@ -35,6 +39,7 @@ resource "aws_ecs_service" "prod_backend_web" {
   deployment_maximum_percent         = 200
   launch_type                        = "FARGATE"
   scheduling_strategy                = "REPLICA"
+  enable_execute_command             = true
 
   load_balancer {
     target_group_arn = aws_lb_target_group.prod_backend.arn
@@ -86,6 +91,25 @@ resource "aws_iam_role" "prod_backend_task" {
       }
     ]
   })
+
+  inline_policy {
+    name = "prod-backend-task-ssmmessages"
+    policy = jsonencode({
+      Version = "2012-10-17"
+      Statement = [
+        {
+          Action   = [
+            "ssmmessages:CreateControlChannel",
+            "ssmmessages:CreateDataChannel",
+            "ssmmessages:OpenControlChannel",
+            "ssmmessages:OpenDataChannel",
+          ]
+          Effect   = "Allow"
+          Resource = "*"
+        },
+      ]
+    })
+  }
 }
 
 resource "aws_iam_role" "ecs_task_execution" {
