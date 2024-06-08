@@ -16,7 +16,7 @@ resource "aws_lb_target_group" "prod_backend" {
   target_type = "ip"
 
   health_check {
-    path                = "/"
+    path                = "/ping/"
     port                = "traffic-port"
     healthy_threshold   = 5
     unhealthy_threshold = 2
@@ -29,8 +29,9 @@ resource "aws_lb_target_group" "prod_backend" {
 # Target listener for http:80
 resource "aws_lb_listener" "prod_http" {
   load_balancer_arn = aws_lb.prod.id
-  port              = "80"
-  protocol          = "HTTP"
+  port              = "443"
+  protocol          = "HTTPS"
+  certificate_arn   = var.certificate_arn
   depends_on        = [aws_lb_target_group.prod_backend]
 
   default_action {

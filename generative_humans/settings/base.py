@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-e6s&*h5=eekm3jj+%)8jbarjfa2ahnwf8d9ckc#tf5d2*n!=yi
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['prod-449835717.eu-central-1.elb.amazonaws.com', 'localhost']
+ALLOWED_HOSTS = ['prod-449835717.eu-central-1.elb.amazonaws.com', 'generativehumans.org', 'localhost']
 
 
 # Application definition
@@ -40,6 +40,7 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+    'generative_humans.middleware.health_check',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
