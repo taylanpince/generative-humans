@@ -14,3 +14,6 @@ DATABASES = {
         'PORT': '5432',
     }
 }
+
+STATIC_URL = '/staticfiles/'
+STATIC_ROOT = '/efs/staticfiles/'

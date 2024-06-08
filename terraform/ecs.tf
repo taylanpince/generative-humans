@@ -20,14 +20,29 @@ resource "aws_ecs_task_definition" "prod_backend_web" {
       command      = ["gunicorn", "-w", "3", "-b", ":8001", "generative_humans.wsgi:application"]
       log_group    = aws_cloudwatch_log_group.prod_backend.name
       log_stream   = aws_cloudwatch_log_stream.prod_backend_web.name
+      log_stream_nginx = aws_cloudwatch_log_stream.nginx.name
       rds_db_name  = var.prod_rds_db_name
       rds_username = var.prod_rds_username
       rds_password = var.prod_rds_password
       rds_hostname = aws_db_instance.prod.address
+      image_nginx  = var.image_nginx
     },
   )
   execution_role_arn     = aws_iam_role.ecs_task_execution.arn
   task_role_arn          = aws_iam_role.prod_backend_task.arn
+  volume {
+    name = "efs-volume"
+    efs_volume_configuration {
+      file_system_id          = aws_efs_file_system.efs.id
+      root_directory          = "/"
+      transit_encryption      = "ENABLED"
+      transit_encryption_port = 2049
+      authorization_config {
+        access_point_id = aws_efs_access_point.app_access_point.id
+        iam             = "ENABLED"
+      }
+    }
+  }
 }
 
 resource "aws_ecs_service" "prod_backend_web" {
@@ -43,8 +58,8 @@ resource "aws_ecs_service" "prod_backend_web" {
 
   load_balancer {
     target_group_arn = aws_lb_target_group.prod_backend.arn
-    container_name   = "prod-backend-web"
-    container_port   = 8001
+    container_name   = "nginx"
+    container_port   = 80
   }
 
   network_configuration {
@@ -146,4 +161,52 @@ resource "aws_cloudwatch_log_group" "prod_backend" {
 resource "aws_cloudwatch_log_stream" "prod_backend_web" {
   name           = "prod-backend-web"
   log_group_name = aws_cloudwatch_log_group.prod_backend.name
+}
+
+resource "aws_cloudwatch_log_stream" "nginx" {
+  name           = "nginx"
+  log_group_name = aws_cloudwatch_log_group.prod_backend.name
+}
+
+# EFS
+resource "aws_efs_file_system" "efs" {
+  lifecycle_policy {
+    transition_to_ia = "AFTER_30_DAYS"
+  }
+}
+
+resource "aws_efs_access_point" "app_access_point" {
+  file_system_id = aws_efs_file_system.efs.id
+  posix_user {
+    uid = 1000
+    gid = 1000
+  }
+  root_directory {
+    path = "/efs"
+    creation_info {
+      owner_uid   = 1000
+      owner_gid   = 1000
+      permissions = "755"
+    }
+  }
+}
+
+resource "aws_efs_mount_target" "efs_mount" {
+  count           = length([aws_subnet.prod_public_1.id, aws_subnet.prod_public_2.id])
+  file_system_id  = aws_efs_file_system.efs.id
+  subnet_id       = [aws_subnet.prod_public_1.id, aws_subnet.prod_public_2.id][count.index]
+  security_groups = [aws_security_group.efs_sg.id]
+}
+
+resource "aws_security_group" "efs_sg" {
+  name        = "EFS Security Group"
+  description = "Allow ECS to EFS communication"
+  vpc_id      = aws_vpc.prod.id
+
+  ingress {
+    from_port   = 2049  # NFS port
+    to_port     = 2049
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"] # Modify this based on your security requirements
+  }
 }

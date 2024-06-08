@@ -34,3 +34,9 @@ variable "prod_rds_instance_class" {
   description = "RDS instance type"
   default     = "db.t4g.micro"
 }
+
+# nginx
+variable "image_nginx" {
+  description = "Docker image to run in the ECS cluster"
+  default     = "770964512279.dkr.ecr.eu-central-1.amazonaws.com/nginx:latest"
+}

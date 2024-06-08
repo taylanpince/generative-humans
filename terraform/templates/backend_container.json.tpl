@@ -20,6 +20,14 @@
         "awslogs-stream-prefix": "${log_stream}"
       }
     },
+    "mountPoints": [
+      {
+        "containerPath": "/efs/staticfiles/",
+        "sourceVolume": "efs-volume",
+        "readOnly": false
+
+      }
+    ],
     "environment": [
       {
         "name": "DATABASE_USERNAME",
@@ -42,5 +50,34 @@
         "value": "generative_humans.settings.production"
       }
     ]
+  },
+  {
+    "name": "nginx",
+    "image": "${image_nginx}",
+    "essential": true,
+    "cpu": 10,
+    "memory": 128,
+    "portMappings": [
+      {
+        "containerPort": 80,
+        "protocol": "tcp"
+      }
+    ],
+    "mountPoints": [
+      {
+        "containerPath": "/efs/staticfiles/",
+        "sourceVolume": "efs-volume",
+        "readOnly": false
+
+      }
+    ],
+    "logConfiguration": {
+      "logDriver": "awslogs",
+      "options": {
+        "awslogs-group": "${log_group}",
+        "awslogs-region": "${region}",
+        "awslogs-stream-prefix": "${log_stream_nginx}"
+      }
+    }
   }
 ]
