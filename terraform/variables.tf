@@ -1,3 +1,8 @@
+variable "domain" {
+  description = "Domain for the project"
+  default     = "generativehumans.org"
+}
+
 variable "region" {
   description = "The AWS region to create resources in."
   default     = "eu-central-1"

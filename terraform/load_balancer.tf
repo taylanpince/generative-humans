@@ -26,8 +26,8 @@ resource "aws_lb_target_group" "prod_backend" {
   }
 }
 
-# Target listener for http:80
-resource "aws_lb_listener" "prod_http" {
+# Target listener for https:443
+resource "aws_lb_listener" "prod_https" {
   load_balancer_arn = aws_lb.prod.id
   port              = "443"
   protocol          = "HTTPS"
@@ -37,6 +37,27 @@ resource "aws_lb_listener" "prod_http" {
   default_action {
     type             = "forward"
     target_group_arn = aws_lb_target_group.prod_backend.arn
+  }
+}
+
+resource "aws_lb_listener_rule" "redirect_www_to_non_www" {
+  listener_arn = aws_lb_listener.prod_https.arn
+
+  action {
+    type = "redirect"
+
+    redirect {
+      host        = "${var.domain}"
+      status_code = "HTTP_301"
+      port        = "443"
+      protocol    = "HTTPS"
+    }
+  }
+
+  condition {
+    host_header {
+      values = ["www.${var.domain}"]
+    }
   }
 }
 
