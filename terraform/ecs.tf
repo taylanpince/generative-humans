@@ -17,6 +17,10 @@ locals {
     rds_password = var.prod_rds_password
     rds_hostname = aws_db_instance.prod.address
     image_nginx  = var.image_nginx
+
+    s3_media_bucket         = var.prod_media_bucket
+    s3_access_key           = aws_iam_access_key.prod_media_bucket.id
+    s3_secret_key           = aws_iam_access_key.prod_media_bucket.secret
   }
 }
 

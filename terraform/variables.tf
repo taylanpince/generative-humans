@@ -51,3 +51,9 @@ variable "certificate_arn" {
   description = "AWS Certificate Manager ARN for generativehumans.org"
   default     = "arn:aws:acm:eu-central-1:770964512279:certificate/56dafd11-1d39-4e88-a8e1-490a340579c8"
 }
+
+# S3
+variable "prod_media_bucket" {
+  description = "S3 Bucket for production media files"
+  default = "generative-humans-media"
+}
