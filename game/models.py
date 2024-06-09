@@ -8,5 +8,10 @@ class Story(models.Model):
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
 
+    class Meta:
+        ordering = ('-created',)
+        verbose_name = 'story'
+        verbose_name_plural = 'stories'
+
     def __str__(self):
         return self.title
