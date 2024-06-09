@@ -3,6 +3,23 @@ resource "aws_ecs_cluster" "prod" {
   name = "prod"
 }
 
+# Local variables
+locals {
+  container_vars = {
+    region = var.region
+
+    image     = aws_ecr_repository.backend.repository_url
+    log_group = aws_cloudwatch_log_group.prod_backend.name
+    log_stream_nginx = aws_cloudwatch_log_stream.nginx.name
+
+    rds_db_name  = var.prod_rds_db_name
+    rds_username = var.prod_rds_username
+    rds_password = var.prod_rds_password
+    rds_hostname = aws_db_instance.prod.address
+    image_nginx  = var.image_nginx
+  }
+}
+
 # Backend web task definition and service
 resource "aws_ecs_task_definition" "prod_backend_web" {
   network_mode             = "awsvpc"
@@ -13,23 +30,19 @@ resource "aws_ecs_task_definition" "prod_backend_web" {
   family = "backend-web"
   container_definitions = templatefile(
     "templates/backend_container.json.tpl",
-    {
-      region       = var.region
-      name         = "prod-backend-web"
-      image        = aws_ecr_repository.backend.repository_url
-      command      = ["gunicorn", "-w", "3", "-b", ":8001", "generative_humans.wsgi:application"]
-      log_group    = aws_cloudwatch_log_group.prod_backend.name
-      log_stream   = aws_cloudwatch_log_stream.prod_backend_web.name
-      log_stream_nginx = aws_cloudwatch_log_stream.nginx.name
-      rds_db_name  = var.prod_rds_db_name
-      rds_username = var.prod_rds_username
-      rds_password = var.prod_rds_password
-      rds_hostname = aws_db_instance.prod.address
-      image_nginx  = var.image_nginx
-    },
+    merge(
+      local.container_vars,
+      {
+        name         = "prod-backend-web"
+        command      = ["gunicorn", "-w", "3", "-b", ":8001", "generative_humans.wsgi:application"]
+        log_stream   = aws_cloudwatch_log_stream.prod_backend_web.name
+      }
+    )
   )
+  
   execution_role_arn     = aws_iam_role.ecs_task_execution.arn
   task_role_arn          = aws_iam_role.prod_backend_task.arn
+
   volume {
     name = "efs-volume"
     efs_volume_configuration {
@@ -166,6 +179,50 @@ resource "aws_cloudwatch_log_stream" "prod_backend_web" {
 resource "aws_cloudwatch_log_stream" "nginx" {
   name           = "nginx"
   log_group_name = aws_cloudwatch_log_group.prod_backend.name
+}
+
+resource "aws_cloudwatch_log_stream" "prod_backend_migrations" {
+  name           = "prod-backend-migrations"
+  log_group_name = aws_cloudwatch_log_group.prod_backend.name
+}
+
+# DB Migration task definition
+resource "aws_ecs_task_definition" "prod_backend_migration" {
+  network_mode             = "awsvpc"
+  requires_compatibilities = ["FARGATE"]
+  cpu                      = 256
+  memory                   = 512
+
+  family = "backend-migration"
+  container_definitions = templatefile(
+    "templates/backend_container.json.tpl",
+    merge(
+      local.container_vars,
+      {
+        name       = "prod-backend-migration"
+        command    = ["python", "manage.py", "migrate"]
+        log_stream = aws_cloudwatch_log_stream.prod_backend_migrations.name
+      },
+    )
+  )
+  
+  depends_on         = [aws_db_instance.prod]
+  execution_role_arn = aws_iam_role.ecs_task_execution.arn
+  task_role_arn      = aws_iam_role.prod_backend_task.arn
+
+  volume {
+    name = "efs-volume"
+    efs_volume_configuration {
+      file_system_id          = aws_efs_file_system.efs.id
+      root_directory          = "/"
+      transit_encryption      = "ENABLED"
+      transit_encryption_port = 2049
+      authorization_config {
+        access_point_id = aws_efs_access_point.app_access_point.id
+        iam             = "ENABLED"
+      }
+    }
+  }
 }
 
 # EFS
