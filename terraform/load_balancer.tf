@@ -40,6 +40,24 @@ resource "aws_lb_listener" "prod_https" {
   }
 }
 
+# Redirect HTTP to HTTPS
+resource "aws_lb_listener" "redirect_http_to_https" {
+  load_balancer_arn = aws_lb.prod.id
+  port              = "80"
+  protocol          = "HTTP"
+
+  default_action {
+    type = "redirect"
+
+    redirect {
+      port        = "443"
+      protocol    = "HTTPS"
+      status_code = "HTTP_301"
+    }
+  }
+}
+
+# Redirect www to non-www
 resource "aws_lb_listener_rule" "redirect_www_to_non_www" {
   listener_arn = aws_lb_listener.prod_https.arn
 
