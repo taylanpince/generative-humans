@@ -43,3 +43,6 @@ db.sqlite3
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
+
+generative_humans/media
+generative_humans/static

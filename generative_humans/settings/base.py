@@ -31,6 +31,7 @@ ALLOWED_HOSTS = ['prod-449835717.eu-central-1.elb.amazonaws.com', 'generativehum
 # Application definition
 
 INSTALLED_APPS = [
+    'game.apps.GameConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
