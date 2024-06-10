@@ -23,6 +23,10 @@ class Human(models.Model):
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
 
+    @property
+    def assigned_chapters(self):
+        return self.chapters.count()
+
     class Meta:
         ordering = ('-created',)
         verbose_name = 'human'

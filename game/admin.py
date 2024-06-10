@@ -1,5 +1,5 @@
 from django.contrib import admin
-from django.db import transaction
+from django.db import IntegrityError, transaction
 from django.shortcuts import redirect, render
 
 from .forms import StoryHumanForm
@@ -32,7 +32,7 @@ class ChapterAdmin(admin.ModelAdmin):
 
 @admin.register(Human)
 class HumanAdmin(admin.ModelAdmin):
-    list_display = ('name', 'email', 'created')
+    list_display = ('name', 'email', 'assigned_chapters', 'created')
     search_fields = ('name', 'email')
     ordering = ('-created',)
     actions = ('assign_story',)
@@ -48,10 +48,14 @@ class HumanAdmin(admin.ModelAdmin):
             total_chapters = story.chapters.count() + 1
 
             for human in queryset:
-                Chapter.objects.create(story=story, human=human, index=total_chapters)
+                try:
+                    Chapter.objects.create(story=story, human=human, index=total_chapters)
+                except IntegrityError:
+                    self.message_user(request, 'You cannot assign multiple chapters to the same human in a single story.', level='ERROR')
+                    return
                 total_chapters += 1
             
-            self.message_user(request, 'Assigned chapters to selected humans.')
+            self.message_user(request, f'Assigned {total_chapters} chapters to selected humans.')
 
             return redirect('admin:game_human_changelist')
 
