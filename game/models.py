@@ -1,3 +1,4 @@
+from secrets import token_urlsafe
 from django.db import models
 
 
@@ -19,7 +20,8 @@ class Story(models.Model):
 
 class Human(models.Model):
     name = models.CharField(max_length=255)
-    email = models.EmailField()
+    email = models.EmailField(unique=True)
+    access_token = models.CharField(unique=True, default=token_urlsafe, max_length=128)
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
 

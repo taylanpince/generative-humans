@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h2>Stories</h2>
+    <ul>
+        {% comment %} {% for story in stories %}
+            <li><a href="{% url 'game:story' story.id %}">{{ story.title }}</a></li>
+        {% endfor %} {% endcomment %}
+    </ul>
+    <p><a href="{% url 'game:logout' %}">Sign out</a></p>
+{% endblock %}
