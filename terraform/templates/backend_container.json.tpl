@@ -68,6 +68,14 @@
       {
        "name": "AWS_S3_ENDPOINT_URL",
        "value": "https://${s3_media_bucket}.s3.${region}.amazonaws.com/"
+      },
+      {
+        "name": "AWS_SES_ACCESS_KEY_ID",
+        "value": "${ses_access_key}"
+      },
+      {
+        "name": "AWS_SES_SECRET_ACCESS_KEY",
+        "value": "${ses_secret_key}"
       }
     ]
   },

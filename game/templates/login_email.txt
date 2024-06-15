@@ -1,0 +1,6 @@
+Hey {{ human.name }},
+Welcome back to Generative Humans. Click on the link below to login to your account.
+
+{{ login_url }}
+
+If you run into any issues, send an email to taylanpince@gmail.com.
