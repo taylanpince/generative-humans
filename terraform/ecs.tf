@@ -193,6 +193,11 @@ resource "aws_cloudwatch_log_stream" "prod_backend_migrations" {
   log_group_name = aws_cloudwatch_log_group.prod_backend.name
 }
 
+resource "aws_cloudwatch_log_stream" "prod_backend_collectstatic" {
+  name           = "prod-backend-collectstatic"
+  log_group_name = aws_cloudwatch_log_group.prod_backend.name
+}
+
 # DB Migration task definition
 resource "aws_ecs_task_definition" "prod_backend_migration" {
   network_mode             = "awsvpc"
@@ -209,6 +214,45 @@ resource "aws_ecs_task_definition" "prod_backend_migration" {
         name       = "prod-backend-migration"
         command    = ["python", "manage.py", "migrate"]
         log_stream = aws_cloudwatch_log_stream.prod_backend_migrations.name
+      },
+    )
+  )
+  
+  depends_on         = [aws_db_instance.prod]
+  execution_role_arn = aws_iam_role.ecs_task_execution.arn
+  task_role_arn      = aws_iam_role.prod_backend_task.arn
+
+  volume {
+    name = "efs-volume"
+    efs_volume_configuration {
+      file_system_id          = aws_efs_file_system.efs.id
+      root_directory          = "/"
+      transit_encryption      = "ENABLED"
+      transit_encryption_port = 2049
+      authorization_config {
+        access_point_id = aws_efs_access_point.app_access_point.id
+        iam             = "ENABLED"
+      }
+    }
+  }
+}
+
+# collectstatic task definition
+resource "aws_ecs_task_definition" "prod_backend_collectstatic" {
+  network_mode             = "awsvpc"
+  requires_compatibilities = ["FARGATE"]
+  cpu                      = 256
+  memory                   = 512
+
+  family = "backend-collectstatic"
+  container_definitions = templatefile(
+    "templates/backend_container.json.tpl",
+    merge(
+      local.container_vars,
+      {
+        name       = "prod-backend-collectstatic"
+        command    = ["python", "manage.py", "collectstatic", "--noinput"]
+        log_stream = aws_cloudwatch_log_stream.prod_backend_collectstatic.name
       },
     )
   )
