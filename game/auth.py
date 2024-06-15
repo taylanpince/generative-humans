@@ -76,3 +76,10 @@ class HumanRequiredMixin(View):
         if hasattr(request, 'human') and request.human is not None:
             return super().dispatch(request, *args, **kwargs)
         return redirect('game:login')
+
+
+class HumanAuthenticatedCheckMixin(View):
+    def dispatch(self, request, *args, **kwargs):
+        if not hasattr(request, 'human') or request.human is None:
+            return super().dispatch(request, *args, **kwargs)
+        return redirect('game:story_list')

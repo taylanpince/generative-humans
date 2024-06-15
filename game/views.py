@@ -4,12 +4,12 @@ from django.views import View
 from django.urls import reverse
 from django.template.loader import render_to_string
 
-from .auth import login_human, HumanRequiredMixin, logout_human
+from .auth import login_human, HumanRequiredMixin, HumanAuthenticatedCheckMixin, logout_human
 from .forms import HumanRegisterForm, HumanLoginForm
 from .models import Human, Story
 
 
-class HumanRegisterView(View):
+class HumanRegisterView(HumanAuthenticatedCheckMixin, View):
     form_class = HumanRegisterForm
     template_name = 'register.html'
 
@@ -29,7 +29,7 @@ class HumanRegisterView(View):
         return render(request, self.template_name, {'form': form})
 
 
-class HumanLoginView(View):
+class HumanLoginView(HumanAuthenticatedCheckMixin, View):
     form_class = HumanLoginForm
     template_name = 'login.html'
 
@@ -61,7 +61,7 @@ class HumanLoginView(View):
         return render(request, self.template_name, {'form': form})
 
 
-class HumanAuthenticateView(View):
+class HumanAuthenticateView(HumanAuthenticatedCheckMixin, View):
     def get(self, request, access_token):
         try:
             human = Human.objects.get(access_token=access_token)
@@ -72,14 +72,14 @@ class HumanAuthenticateView(View):
         return redirect('game:story_list')
 
 
-class HumanLoginSuccessView(View):
+class HumanLoginSuccessView(HumanAuthenticatedCheckMixin, View):
     template_name = 'login_success.html'
 
     def get(self, request):
         return render(request, self.template_name)
 
 
-class HumanLogoutView(View):
+class HumanLogoutView(HumanAuthenticatedCheckMixin, View):
     def get(self, request):
         logout_human(request)
         return redirect('game:login')

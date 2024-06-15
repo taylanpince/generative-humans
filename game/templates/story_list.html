@@ -1,18 +1,61 @@
 {% extends "base.html" %}
 
 {% block content %}
-    <h2>Stories</h2>
-    {% if chapters %}
-    <p>You are a part of the following stories:</p>
-    <ul>
-        {% for chapter in chapters %}
-        <h3>{{ chapter.story.title }}</h3>
-        <p>{{ chapter.story.description }}</p>
-        <p><a href="{% url 'game:story_detail' chapter.story.id %}">Read this story</a></p>
-        {% endfor %}
-    </ul>
-    {% else %}
-    <p>You are not a part of any stories yet. You'll receive an email when it's time for you to write your chapter in a story.</p>
-    {% endif %}
+<div class="bg-white mx-auto max-w-7xl px-6 pb-32 pt-36 sm:pt-60 lg:px-8 lg:pt-32">
+    <div class="mx-auto max-w-7xl px-6 lg:px-8">
+        <div class="mx-auto max-w-2xl lg:max-w-4xl">
+          <h2 class="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">Your Stories</h2>
+          <p class="mt-2 text-lg leading-8 text-gray-600">You are a part of the following stories.</p>
 
+        <div class="mt-16 space-y-20 lg:mt-20 lg:space-y-20">
+            
+            {% if chapters %}
+            {% for chapter in chapters %}
+            <article class="relative isolate flex flex-col gap-8 lg:flex-row">
+                <a href="{% url 'game:story_detail' chapter.story.pk %}">
+                    <div class="relative aspect-[16/9] sm:aspect-[2/1] lg:aspect-square lg:w-64 lg:shrink-0">
+                        <img src="{{ chapter.story.illustration.url }}" alt="{{ chapter.story.title }}" class="absolute inset-0 h-full w-full rounded-2xl bg-gray-50 object-cover object-top">
+                        <div class="absolute inset-0 rounded-2xl ring-1 ring-inset ring-gray-900/10"></div>
+                    </div>
+                </a>
+                <div>
+                  <div class="flex items-center gap-x-4 text-xs">
+                    <span class="text-gray-500">{{ chapter.story.total_chapters }} humans writing</span>
+                    {% comment %} <a href="#" class="relative z-10 rounded-full bg-gray-50 px-3 py-1.5 font-medium text-gray-600 hover:bg-gray-100">Marketing</a> {% endcomment %}
+                  </div>
+                  <div class="group relative max-w-xl">
+                    <h3 class="mt-3 text-lg font-semibold leading-6 text-gray-900 group-hover:text-gray-600">
+                      <a href="{% url 'game:story_detail' chapter.story.pk %}">
+                        <span class="absolute inset-0"></span>
+                        {{ chapter.story.title }}
+                      </a>
+                    </h3>
+                    <p class="mt-5 text-sm leading-6 text-gray-600">{{ chapter.story.description }}</p>
+                  </div>
+                  <div class="mt-6 flex border-t border-gray-900/5 pt-6">
+                    <div class="relative flex items-center gap-x-4">
+                      <div class="text-sm leading-6">
+                        {% with next_human=chapter.story.next_human %}
+                        <p class="font-semibold text-gray-900">
+                            <span class="absolute inset-0"></span>
+                            Next author: {{ next_human.name }}
+                        </p>
+                        {% if next_human.pk == request.human.pk %}
+                        <a href="{% url 'game:story_detail' chapter.story.pk %}" class="rounded-md bg-indigo-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Write Your Chapter</a>
+                        {% endif %}
+                        {% endwith %}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+            </article>
+            {% endfor %}
+            {% else %}
+            <p>You are not a part of any stories yet. You'll receive an email when it's time for you to write your chapter in a story.</p>
+            {% endif %}
+
+        </div>
+    </div>
+</div>
+</div>
 {% endblock %}

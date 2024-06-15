@@ -16,7 +16,6 @@ from pathlib import Path
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
@@ -26,7 +25,7 @@ SECRET_KEY = 'django-insecure-e6s&*h5=eekm3jj+%)8jbarjfa2ahnwf8d9ckc#tf5d2*n!=yi
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['prod-449835717.eu-central-1.elb.amazonaws.com', 'generativehumans.org', 'localhost']
+ALLOWED_HOSTS = ['prod-449835717.eu-central-1.elb.amazonaws.com', 'generativehumans.org']
 
 
 # Application definition
@@ -120,6 +119,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
 
 STATIC_URL = 'static/'
+STATIC_ROOT = BASE_DIR / 'static'
 
 # Media files
 

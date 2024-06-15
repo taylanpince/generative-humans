@@ -16,3 +16,5 @@ DATABASES = {
 }
 
 DEFAULT_FILE_STORAGE = "django.core.files.storage.FileSystemStorage"
+
+ALLOWED_HOSTS += ['localhost', 'd17e-37-222-98-84.ngrok-free.app']
