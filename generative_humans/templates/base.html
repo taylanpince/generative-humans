@@ -32,10 +32,10 @@
             </div>
             <div class="hidden lg:flex lg:flex-1 lg:justify-end items-center gap-x-6">
               {% if request.human %}
-              <a href="{% url 'game:logout' %}" class="lg:block lg:text-sm lg:font-semibold lg:leading-6 lg:text-gray-900">Log out</a>
+              <a href="{% url 'game:logout' %}" class="lg:block lg:text-sm lg:font-semibold lg:leading-6 lg:text-gray-900">Sign out</a>
               <a href="{% url 'game:story_list' %}" class="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Your Stories</a>
               {% else%}
-              <a href="{% url 'game:login' %}" class="lg:block lg:text-sm lg:font-semibold lg:leading-6 lg:text-gray-900">Log in</a>
+              <a href="{% url 'game:login' %}" class="lg:block lg:text-sm lg:font-semibold lg:leading-6 lg:text-gray-900">Sign in</a>
               <a href="{% url 'game:register' %}" class="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Register</a>
               {% endif %}
             </div>
@@ -64,10 +64,10 @@
                   </div>
                   <div class="py-6">
                     {% if request.human %}
-                    <a href="{% url 'game:logout' %}" class="-mx-3 block rounded-lg px-3 py-2.5 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50">Log out</a>
+                    <a href="{% url 'game:logout' %}" class="-mx-3 block rounded-lg px-3 py-2.5 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50">Sign out</a>
                     {% else%}
                     <a href="{% url 'game:register' %}" class="-mx-3 block rounded-lg px-3 py-2.5 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50">Register</a>
-                    <a href="{% url 'game:login' %}" class="-mx-3 block rounded-lg px-3 py-2.5 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50">Log in</a>
+                    <a href="{% url 'game:login' %}" class="-mx-3 block rounded-lg px-3 py-2.5 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50">Sign in</a>
                     {% endif %}
                   </div>
                 </div>
