@@ -16,6 +16,10 @@ class Story(models.Model):
     @property
     def next_chapter(self):
         return self.chapters.filter(is_completed=False).first()
+    
+    @property
+    def last_chapter(self):
+        return self.chapters.last()
 
     @property
     def next_human(self):
@@ -27,6 +31,9 @@ class Story(models.Model):
     @property
     def is_completed(self):
         return self.chapters.filter(is_completed=False).exists()
+
+    def completed_chapters(self):
+        return self.chapters.filter(is_completed=True)
 
     class Meta:
         ordering = ('-created',)

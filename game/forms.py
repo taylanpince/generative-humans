@@ -1,6 +1,6 @@
 from django import forms
 
-from .models import Story, Human
+from .models import Story, Human, Chapter
 
 
 class StoryHumanForm(forms.Form):
@@ -11,6 +11,10 @@ class HumanRegisterForm(forms.ModelForm):
     class Meta:
         model = Human
         fields = ['name', 'email']
+
+
+class ChapterWriteForm(forms.Form):
+    content = forms.CharField(widget=forms.Textarea)
 
 
 class HumanLoginForm(forms.Form):

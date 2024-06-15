@@ -5,7 +5,7 @@ from django.urls import reverse
 from django.template.loader import render_to_string
 
 from .auth import login_human, HumanRequiredMixin, HumanAuthenticatedCheckMixin, logout_human
-from .forms import HumanRegisterForm, HumanLoginForm
+from .forms import HumanRegisterForm, HumanLoginForm, ChapterWriteForm
 from .models import Human, Story
 
 
@@ -101,3 +101,53 @@ class StoryDetailView(HumanRequiredMixin, View):
         story = get_object_or_404(Story, pk=story_id)
 
         return render(request, self.template_name , {'story': story})
+
+
+class ChapterWriteView(HumanRequiredMixin, View):
+    form_class = ChapterWriteForm
+    template_name = 'story_write.html'
+
+    def get(self, request, story_id):
+        story = get_object_or_404(Story, pk=story_id)
+        chapter = story.next_chapter
+
+        if not chapter:
+            return redirect('game:story_list')
+
+        if chapter.human != request.human:
+            return redirect('game:story_list')
+
+        form = self.form_class()
+        return render(request, self.template_name, {
+            'form': form,
+            'story': story,
+            'chapter': chapter,
+        })
+
+    def post(self, request, story_id):
+        story = get_object_or_404(Story, pk=story_id)
+        chapter = story.next_chapter
+
+        if not chapter:
+            return redirect('game:story_list')
+
+        if chapter.human != request.human:
+            return redirect('game:story_list')
+
+        form = self.form_class(request.POST)
+
+        if form.is_valid():
+            content = form.cleaned_data['content']
+            chapter.body = content
+            chapter.is_completed = True
+            chapter.save()
+
+            # TODO: Send email to next human
+
+            return redirect('game:story_detail', story_id=story_id)
+
+        return render(request, self.template_name, {
+            'form': form,
+            'story': story,
+            'chapter': chapter,
+        })
