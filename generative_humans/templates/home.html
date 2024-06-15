@@ -3,4 +3,10 @@
 {% block content %}
 <h1 class="text-4xl font-bold mb-4">Generative Humans</h1>
 <p class="text-lg mb-4">A Conference Game</p>
+{% if request.human %}
+<p><a href="{% url 'game:story_list' %}">View your stories</a></p>
+{% else %}
+<p><a href="{% url 'game:register' %}">Register here</a></p>
+{% endif %}
+
 {% endblock content %}

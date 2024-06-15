@@ -9,6 +9,9 @@
 <body>
     <div class="container mx-auto p-4">
         {% block content %}{% endblock content %}
+        {% if request.human %}
+        <p><a href="{% url 'game:logout' %}">Sign out</a></p>
+        {% endif %}
     </div>
 </body>
 </html>

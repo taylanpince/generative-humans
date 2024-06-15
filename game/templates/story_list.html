@@ -2,10 +2,17 @@
 
 {% block content %}
     <h2>Stories</h2>
+    {% if chapters %}
+    <p>You are a part of the following stories:</p>
     <ul>
-        {% comment %} {% for story in stories %}
-            <li><a href="{% url 'game:story' story.id %}">{{ story.title }}</a></li>
-        {% endfor %} {% endcomment %}
+        {% for chapter in chapters %}
+        <h3>{{ chapter.story.title }}</h3>
+        <p>{{ chapter.story.description }}</p>
+        <p><a href="{% url 'game:story_detail' chapter.story.id %}">Read this story</a></p>
+        {% endfor %}
     </ul>
-    <p><a href="{% url 'game:logout' %}">Sign out</a></p>
+    {% else %}
+    <p>You are not a part of any stories yet. You'll receive an email when it's time for you to write your chapter in a story.</p>
+    {% endif %}
+
 {% endblock %}

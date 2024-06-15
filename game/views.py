@@ -1,12 +1,12 @@
 from django.core.mail import send_mail
-from django.shortcuts import render, redirect
+from django.shortcuts import get_object_or_404, render, redirect
 from django.views import View
 from django.urls import reverse
 from django.template.loader import render_to_string
 
 from .auth import login_human, HumanRequiredMixin, logout_human
 from .forms import HumanRegisterForm, HumanLoginForm
-from .models import Human
+from .models import Human, Story
 
 
 class HumanRegisterView(View):
@@ -89,4 +89,15 @@ class StoryListView(HumanRequiredMixin, View):
     template_name = 'story_list.html'
 
     def get(self, request):
-        return render(request, self.template_name)
+        chapters = request.human.chapters.all()
+
+        return render(request, self.template_name , {'chapters': chapters})
+
+
+class StoryDetailView(HumanRequiredMixin, View):
+    template_name = 'story_detail.html'
+
+    def get(self, request, story_id):
+        story = get_object_or_404(Story, pk=story_id)
+
+        return render(request, self.template_name , {'story': story})
