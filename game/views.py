@@ -79,7 +79,7 @@ class HumanLoginSuccessView(HumanAuthenticatedCheckMixin, View):
         return render(request, self.template_name)
 
 
-class HumanLogoutView(HumanAuthenticatedCheckMixin, View):
+class HumanLogoutView(View):
     def get(self, request):
         logout_human(request)
         return redirect('game:login')
