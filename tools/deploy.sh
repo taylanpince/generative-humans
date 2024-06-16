@@ -23,6 +23,8 @@ echo "Task ${MIGRATION_TASK_ARN} running..."
 # Wait migration task to complete
 aws ecs wait tasks-stopped --region eu-central-1 --profile generative_humans --cluster prod --tasks "${MIGRATION_TASK_ARN}"
 
+echo "Running collectstatic task..."
+
 # Start collectstatic task
 COLLECTSTATIC_TASK_ARN=$(aws ecs run-task --region eu-central-1 --profile generative_humans --cluster prod --task-definition backend-collectstatic --count 1 --launch-type FARGATE --network-configuration "${NETWORK_CONFIGURATON}" --query 'tasks[*][taskArn]' --output text)
 
