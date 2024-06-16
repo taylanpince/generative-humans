@@ -61,6 +61,7 @@
                 <div class="-my-6 divide-y divide-gray-500/10">
                   <div class="space-y-2 py-6">
                     <a href="{% url 'game:story_list' %}" class="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50">Your Stories</a>
+                    <a href="{% url 'about' %}" class="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50">About</a>
                   </div>
                   <div class="py-6">
                     {% if request.human %}
@@ -86,7 +87,7 @@
             <div class="mx-auto max-w-7xl overflow-hidden px-6 py-20 sm:py-24 lg:px-8">
               <nav class="-mb-6 columns-2 sm:flex sm:justify-center sm:space-x-12" aria-label="Footer">
                 <div class="pb-6">
-                  <a href="{% url 'home' %}" class="text-sm leading-6 text-gray-600 hover:text-gray-900">About</a>
+                  <a href="{% url 'about' %}" class="text-sm leading-6 text-gray-600 hover:text-gray-900">About</a>
                 </div>
                 <div class="pb-6">
                   <a href="{% url 'game:story_list' %}" class="text-sm leading-6 text-gray-600 hover:text-gray-900">Your Stories</a>

@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% load static %}
+
+{% block content %}
+
+<div class="bg-white py-32">
+  <div class="mx-auto max-w-7xl px-6 lg:px-8">
+    <div class="mx-auto flex max-w-2xl flex-col items-end justify-between gap-16 lg:mx-0 lg:max-w-none lg:flex-row">
+      <div class="w-full lg:max-w-lg lg:flex-auto">
+        <h2 class="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">What's this about?</h2>
+        <img src="{% static 'img/mimi.jpeg' %}" alt="" class="mt-16 aspect-[6/5] w-full rounded-2xl bg-gray-50 object-cover lg:aspect-auto lg:h-[34.5rem]">
+      </div>
+      <div class="w-full lg:max-w-xl lg:flex-auto">
+        <p class="mt-6 text-lg leading-8 text-gray-600">
+          Generative Humans is a little experiment on collaborative storytelling, by Taylan and Mimi. For over a year now, our professional and personal lives have been forever changed by large language models that are capable of coming up with creative and interesting stories, as well as imagery. Mimi and I thought, could a group of humans come up with just as interesting, and maybe even more creative stories?
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+  
+{% endblock %}
