@@ -15,8 +15,9 @@
           <div class="mt-6 flex border-t border-gray-900/5 pt-6">
             <div class="relative flex items-center gap-x-4">
               <div class="text-sm leading-6">
-                <span class="text-gray-500">{{ story.total_chapters }} human{{ story.total_chapters|pluralize }} are writing this story</span>
+                <span class="text-gray-500">{{ story.total_chapters }} human{{ story.total_chapters|pluralize }} writing this story</span>
                 {% with next_human=story.next_human %}
+                {% if next_human %}
                 <p class="font-semibold text-gray-900">
                     Next author: {{ next_human.name }}
                 </p>
@@ -24,6 +25,7 @@
                 <p class="mt-4">
                   <a href="{% url 'game:story_write' story.id %}" class="rounded-md bg-indigo-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Write Your Chapter</a>
                 </p>
+                {% endif %}
                 {% endif %}
                 {% endwith %}
               </div>
