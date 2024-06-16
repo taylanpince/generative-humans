@@ -1,4 +1,5 @@
-from django.core.mail import send_mail
+from django.db.models import Count
+from django.core.mail import send_mail, mail_admins
 from django.shortcuts import get_object_or_404, render, redirect
 from django.views import View
 from django.urls import reverse
@@ -6,7 +7,7 @@ from django.template.loader import render_to_string
 
 from .auth import login_human, HumanRequiredMixin, HumanAuthenticatedCheckMixin, logout_human
 from .forms import HumanRegisterForm, HumanLoginForm, ChapterWriteForm
-from .models import Human, Story
+from .models import Human, Story, Chapter
 
 
 class HumanRegisterView(HumanAuthenticatedCheckMixin, View):
@@ -23,6 +24,29 @@ class HumanRegisterView(HumanAuthenticatedCheckMixin, View):
         if form.is_valid():
             human = form.save()
             login_human(request, human)
+
+            story = Story.objects.filter(
+                is_full=False
+            ).annotate(
+                chapter_count=Count('chapters')
+            ).order_by('chapter_count').first()
+
+            if story:
+                Chapter.objects.create(
+                    story=story, 
+                    human=human, 
+                    index=story.total_chapters + 1
+                )
+
+                if story.total_chapters >= 25:
+                    story.is_full = True
+                    story.save()
+            else:
+                mail_admins(
+                    'Generative Humans: No more stories available',
+                    'No more stories are available for new humans.',
+                    fail_silently=True
+                )
 
             return redirect('game:story_list')
 
@@ -142,7 +166,21 @@ class ChapterWriteView(HumanRequiredMixin, View):
             chapter.is_completed = True
             chapter.save()
 
-            # TODO: Send email to next human
+            next_human = story.next_human
+
+            if next_human:
+                login_url = request.build_absolute_uri(reverse('game:authenticate', args=[next_human.access_token]))
+                text_mail = render_to_string('chapter_email.txt', {'login_url': login_url, 'human': next_human})
+                html_mail = render_to_string('chapter_email.html', {'login_url': login_url, 'human': next_human})
+
+                send_mail(
+                    'Generative Humans: Write your chapter',
+                    text_mail,
+                    'storybot@generativehumans.org',
+                    [next_human.email],
+                    fail_silently=False,
+                    html_message=html_mail
+                )
 
             return redirect('game:story_detail', story_id=story_id)
 

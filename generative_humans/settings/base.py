@@ -27,6 +27,7 @@ DEBUG = True
 
 ALLOWED_HOSTS = ['prod-449835717.eu-central-1.elb.amazonaws.com', 'generativehumans.org']
 
+ADMINS = (('Taylan Pince', 'taylanpince@gmail.com'), )
 
 # Application definition
 

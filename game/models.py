@@ -8,6 +8,7 @@ class Story(models.Model):
     illustration = models.ImageField(upload_to='illustrations/', blank=True, null=True)
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
+    is_full = models.BooleanField(default=False)
 
     @property
     def total_chapters(self):

@@ -15,7 +15,7 @@
           <div class="mt-6 flex border-t border-gray-900/5 pt-6">
             <div class="relative flex items-center gap-x-4">
               <div class="text-sm leading-6">
-                <span class="text-gray-500">{{ story.total_chapters }} humans are writing this story</span>
+                <span class="text-gray-500">{{ story.total_chapters }} human{{ story.total_chapters|pluralize }} are writing this story</span>
                 {% with next_human=story.next_human %}
                 <p class="font-semibold text-gray-900">
                     Next author: {{ next_human.name }}

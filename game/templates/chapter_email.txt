@@ -1,0 +1,6 @@
+Hey {{ human.name }},
+It's your turn to write a chapter for your collaborative story. Go ahead:
+
+{{ login_url }}
+
+If you run into any issues, send an email to taylanpince@gmail.com.
