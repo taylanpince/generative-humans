@@ -14,7 +14,7 @@ class HumanRegisterForm(forms.ModelForm):
 
 
 class ChapterWriteForm(forms.Form):
-    content = forms.CharField(widget=forms.Textarea)
+    content = forms.CharField(widget=forms.Textarea, min_length=250)
 
 
 class HumanLoginForm(forms.Form):
