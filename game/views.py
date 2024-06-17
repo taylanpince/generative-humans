@@ -38,7 +38,7 @@ class HumanRegisterView(HumanAuthenticatedCheckMixin, View):
                     index=story.total_chapters + 1
                 )
 
-                if story.total_chapters >= 25:
+                if story.total_chapters >= 5:
                     story.is_full = True
                     story.save()
             else:
