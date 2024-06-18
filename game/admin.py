@@ -1,6 +1,9 @@
 from django.contrib import admin
+from django.core.mail import send_mail
 from django.db import IntegrityError, transaction
 from django.shortcuts import redirect, render
+from django.urls import reverse
+from django.template.loader import render_to_string
 
 from .forms import StoryHumanForm
 from .models import Story, Human, Chapter
@@ -17,10 +20,44 @@ class ChapterInline(admin.TabularInline):
 
 @admin.register(Story)
 class StoryAdmin(admin.ModelAdmin):
-    list_display = ('title', 'created')
+    list_display = ('title', 'created', 'next_human', 'is_completed')
     search_fields = ('title', 'description')
     ordering = ('-created',)
+    actions = ('send_reminders',)
     inlines = (ChapterInline,)
+
+    @admin.action(description='Send reminders to humans')
+    def send_reminders(self, request, queryset):
+        count = 0
+
+        for story in queryset:
+            if story.is_completed:
+                continue
+
+            human = story.next_human
+
+            if not human:
+                continue
+
+            subject = f'Generative Humans: Reminder for Your Story {story.title}'
+            login_url = request.build_absolute_uri(reverse('game:authenticate', args=[human.access_token]))
+            text_mail = render_to_string('reminder_email.txt', {'login_url': login_url, 'human': human})
+            html_mail = render_to_string('reminder_email.html', {'login_url': login_url, 'human': human})
+
+            send_mail(
+                subject,
+                text_mail,
+                'storybot@generativehumans.org',
+                [human.email],
+                fail_silently=False,
+                html_message=html_mail
+            )
+
+            count += 1
+        
+        self.message_user(request, f'Sent {count} reminders for selected stories.')
+
+        return redirect('admin:game_story_changelist')
 
 
 @admin.register(Chapter)
@@ -32,7 +69,7 @@ class ChapterAdmin(admin.ModelAdmin):
 
 @admin.register(Human)
 class HumanAdmin(admin.ModelAdmin):
-    list_display = ('name', 'email', 'assigned_chapters', 'created')
+    list_display = ('name', 'email', 'assigned_chapters_count', 'created')
     search_fields = ('name', 'email')
     ordering = ('-created',)
     actions = ('assign_story',)
@@ -63,3 +100,4 @@ class HumanAdmin(admin.ModelAdmin):
             'form': form, 
             'queryset': queryset
         })
+

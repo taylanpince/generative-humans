@@ -1,5 +1,7 @@
 from secrets import token_urlsafe
 from django.db import models
+from django.urls import reverse
+from django.template.loader import render_to_string
 
 
 class Story(models.Model):
@@ -31,7 +33,7 @@ class Story(models.Model):
 
     @property
     def is_completed(self):
-        return self.chapters.filter(is_completed=False).exists()
+        return not self.chapters.filter(is_completed=False).exists()
 
     def completed_chapters(self):
         return self.chapters.filter(is_completed=True)
@@ -53,7 +55,7 @@ class Human(models.Model):
     updated = models.DateTimeField(auto_now=True)
 
     @property
-    def assigned_chapters(self):
+    def assigned_chapters_count(self):
         return self.chapters.count()
 
     class Meta:

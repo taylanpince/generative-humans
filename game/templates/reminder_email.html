@@ -1,0 +1,9 @@
+{% extends "base_email.html" %}
+
+{% block title %}Story Reminder{% endblock title %}
+
+{% block intro_text %}There are several other people waiting on you to finish your chapter so they can write theirs. Can you take a few minutes to add your part?{% endblock intro_text %}
+
+{% block action_button_url %}{{ login_url }}{% endblock action_button_url %}
+
+{% block action_button_title %}Write Your Chapter{% endblock action_button_title %}

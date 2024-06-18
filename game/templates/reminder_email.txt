@@ -1,0 +1,6 @@
+Hey {{ human.name }},
+There are several other people waiting on you to finish your chapter so they can write theirs. Can you take a few minutes to add your part?
+
+{{ login_url }}
+
+If you run into any issues, send an email to taylanpince@gmail.com.
