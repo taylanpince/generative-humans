@@ -34,11 +34,10 @@
             <div class="hidden lg:flex lg:flex-1 lg:justify-end items-center gap-x-6">
               {% if request.human %}
               <a href="{% url 'game:logout' %}" class="lg:block lg:text-sm lg:font-semibold lg:leading-6 lg:text-gray-900">Sign out</a>
-              <a href="{% url 'game:story_list' %}" class="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Your Stories</a>
               {% else%}
               <a href="{% url 'game:login' %}" class="lg:block lg:text-sm lg:font-semibold lg:leading-6 lg:text-gray-900">Sign in</a>
-              <a href="{% url 'game:register' %}" class="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Register</a>
               {% endif %}
+              <a href="{% url 'game:story_list' %}" class="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Stories</a>
             </div>
           </nav>
           <!-- Mobile menu, show/hide based on menu open state. -->
@@ -61,7 +60,7 @@
               <div class="mt-6 flow-root">
                 <div class="-my-6 divide-y divide-gray-500/10">
                   <div class="space-y-2 py-6">
-                    <a href="{% url 'game:story_list' %}" class="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50">Your Stories</a>
+                    <a href="{% url 'game:story_list' %}" class="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50">Stories</a>
                     <a href="{% url 'about' %}" class="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50">About</a>
                   </div>
                   <div class="py-6">
@@ -91,7 +90,7 @@
                   <a href="{% url 'about' %}" class="text-sm leading-6 text-gray-600 hover:text-gray-900">About</a>
                 </div>
                 <div class="pb-6">
-                  <a href="{% url 'game:story_list' %}" class="text-sm leading-6 text-gray-600 hover:text-gray-900">Your Stories</a>
+                  <a href="{% url 'game:story_list' %}" class="text-sm leading-6 text-gray-600 hover:text-gray-900">Stories</a>
                 </div>
                 <div class="pb-6">
                   <a href="mailto:taylanpince@gmail.com" class="text-sm leading-6 text-gray-600 hover:text-gray-900">Help</a>

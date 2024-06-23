@@ -12,10 +12,8 @@
         <h2 class="text-1xl font-semibold tracking-tight text-gray-600 sm:text-4xl">A Conference Game</h2>
         <p class="mt-6 text-lg leading-8 text-gray-600 sm:max-w-md lg:max-w-none">Tell a story with your fellow attendees at This Next Thing 2024. Generative Humans is an experimental storytelling game.</p>
         <div class="mt-10 flex items-center gap-x-6">
-            {% if request.human %}
-            <a href="{% url 'game:story_list' %}" class="rounded-md bg-indigo-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">View Your Stories</a>
-            {% else %}
-            <a href="{% url 'game:register' %}" class="rounded-md bg-indigo-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Register</a>
+            <a href="{% url 'game:story_list' %}" class="rounded-md bg-indigo-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">View All Stories</a>
+            {% if not request.human %}
             <a href="{% url 'game:login' %}" class="text-sm font-semibold leading-6 text-gray-900">Login <span aria-hidden="true">→</span></a>
             {% endif %}
         </div>
