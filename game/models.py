@@ -15,25 +15,10 @@ class Story(models.Model):
     @property
     def total_chapters(self):
         return self.chapters.count()
-
-    @property
-    def next_chapter(self):
-        return self.chapters.filter(is_completed=False).first()
     
     @property
     def last_chapter(self):
         return self.chapters.last()
-
-    @property
-    def next_human(self):
-        next_chapter = self.next_chapter
-        if not next_chapter:
-            return None
-        return next_chapter.human
-
-    @property
-    def is_completed(self):
-        return not self.chapters.filter(is_completed=False).exists()
 
     def completed_chapters(self):
         return self.chapters.filter(is_completed=True)
