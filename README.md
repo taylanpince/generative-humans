@@ -23,3 +23,11 @@ terraform apply
 ```
 
 Terraform will ask for a database password, which you can set during the first run.
+
+Full deployment script can be run under `tools`:
+
+```
+./tools/deploy.sh
+```
+
+This will create a new Docker image with the updated application, register it, run migrations and `collectstatic` on AWS and refresh the ECS tasks.
