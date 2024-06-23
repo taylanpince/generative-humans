@@ -20,7 +20,15 @@
                 </a>
                 <div>
                   <div class="flex items-center gap-x-4 text-xs">
-                    <span class="text-gray-500">{{ story.chapters_count }} humans writing</span>
+                    <span class="text-gray-500">
+                      {% if story.chapters_count == 0 %}
+                      No chapters written yet
+                      {% elif story.chapters_count == 1 %}
+                      1 chapter so far
+                      {% else %}
+                      {{ story.chapters_count }} chapters written so far
+                      {% endif %}
+                    </span>
                     {% comment %} <a href="#" class="relative z-10 rounded-full bg-gray-50 px-3 py-1.5 font-medium text-gray-600 hover:bg-gray-100">Marketing</a> {% endcomment %}
                   </div>
                   <div class="group relative max-w-xl">

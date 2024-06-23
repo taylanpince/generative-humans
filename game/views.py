@@ -90,7 +90,9 @@ class StoryListView(View):
     template_name = 'story_list.html'
 
     def get(self, request):
-        stories = Story.objects.all().annotate(chapters_count=Count('chapters'))
+        stories = Story.objects.all().annotate(
+            chapters_count=Count('chapters')
+        ).order_by('-chapters_count')
 
         return render(request, self.template_name , {'stories': stories})
 
@@ -100,8 +102,9 @@ class StoryDetailView(View):
 
     def get(self, request, story_id):
         story = get_object_or_404(Story, pk=story_id)
+        total_chapters = story.total_chapters
 
-        return render(request, self.template_name , {'story': story})
+        return render(request, self.template_name , {'story': story, 'total_chapters': total_chapters})
 
 
 class ChapterWriteView(HumanRequiredMixin, View):
@@ -110,15 +113,18 @@ class ChapterWriteView(HumanRequiredMixin, View):
 
     def get(self, request, story_id):
         story = get_object_or_404(Story, pk=story_id)
+        total_chapters = story.total_chapters
         form = self.form_class()
 
         return render(request, self.template_name, {
             'form': form,
             'story': story,
+            'total_chapters': total_chapters,
         })
 
     def post(self, request, story_id):
         story = get_object_or_404(Story, pk=story_id)
+        total_chapters = story.total_chapters
         form = self.form_class(request.POST)
 
         if form.is_valid():
@@ -137,4 +143,5 @@ class ChapterWriteView(HumanRequiredMixin, View):
         return render(request, self.template_name, {
             'form': form,
             'story': story,
+            'total_chapters': total_chapters,
         })
